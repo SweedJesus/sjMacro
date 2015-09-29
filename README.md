@@ -20,6 +20,6 @@ casted on.
 ```
 
 -   Resurrect with yell announce
-```
+```Lua
 /run local t=SmartCastFriend("Resurrection")if(t and UnitIsDead(t))then SendChatMessage("Resurrection on "..UnitName(t),"YELL")end
 ```
