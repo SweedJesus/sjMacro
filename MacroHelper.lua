@@ -1,18 +1,3 @@
-function print(msg)
-    DEFAULT_CHAT_FRAME:AddMessage(msg)
-end
-
-
-function ToggleHelm()
-    ShowHelm(not ShowingHelm())
-end
-
-
-function ToggleCloak()
-    ShowCloak(not ShowingCloak())
-end
-
-
 function SmartCast(spell)
     local haveTarget = UnitExists("target")
     local target = "player"
