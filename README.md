@@ -42,17 +42,17 @@ possible to keep that fast.
 /run if(IsAltKeyDown())then SmartCast("Flash Heal(Rank 1)",4)else SmartCast("Flash Heal",4)end
 ```
 
-## Renew (automatic downrank)
+### Renew (automatic downrank)
 ```
 /run SmartBuff("Renew")
 ```
 
-## Power Word: Fortitude (with Alt modifier for Prayer of Fortitude)
+### Power Word: Fortitude (with Alt modifier for Prayer of Fortitude)
 ```
 /run if(IsAltKeyDown())then SmartCast("Prayer of Fortitude")else SmartBuff("Power Word: Fortitude")end
 ```
 
-## Resurrection (say name of unit casted on if actually dead)
+### Resurrection (say name of unit casted on if actually dead)
 ```
 /run local t=SmartCast("Resurrection",4)if(UnitIsDead(t))then SendChatMessage("Resurrection on "..UnitName(t),"SAY")end
 ```
