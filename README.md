@@ -56,3 +56,64 @@ possible to keep that fast.
 ```
 /run local t=SmartCast("Resurrection",4)if(UnitIsDead(t))then SendChatMessage("Resurrection on "..UnitName(t),"SAY")end
 ```
+
+## My Macros:
+
+```
+MACRO 16777231 " " Spell_Holy_HolyNova
+/run if nil then CastSpellByName("Holy Nova") end
+/run if not IsAltKeyDown()then CastSpellByName("Holy Nova")else CastSpellByName("Holy Nova(Rank 1)")end
+END
+MACRO 16777225 " " Spell_Nature_NullifyDisease
+/script if nil then CastSpellByName("Abolish Disease") end
+/run SmartCast("Abolish Disease",4)
+END
+MACRO 16777227 " " Spell_Holy_DispelMagic
+/script if nil then CastSpellByName("Dispel Magic") end
+/run SmartCast("Dispel Magic",4)
+END
+MACRO 16777233 " " Spell_Holy_DivineSpirit
+/script if nil then CastSpellByName("Divine Spirit") end
+/run if(IsAltKeyDown())then SmartCast("Prayer of Spirit")else SmartBuff("Divine Spirit")end
+END
+MACRO 16777228 " " Spell_Holy_FlashHeal
+/script if nil then CastSpellByName("Flash Heal") end
+/run if(IsAltKeyDown())then SmartCast("Flash Heal(Rank 1)",4)else SmartCast("Flash Heal",4)end
+END
+MACRO 16777232 " " Spell_Holy_GreaterHeal
+/script if nil then CastSpellByName("Greater Heal") end
+/run if(IsAltKeyDown())then SmartCast("Greater Heal(Rank 1)",4)else SmartCast("Greater Heal",4)end
+END
+MACRO 16777238 " " Spell_Holy_Heal
+/script if nil then CastSpellByName("Heal") end
+/run SmartCast("Heal(Rank 2)",4)
+END
+MACRO 16777229 " " Spell_Shadow_AntiShadow
+/script if nil then CastSpellByName("Shadow Protection") end
+/run if(IsAltKeyDown())then SmartCast("Prayer of Shadow Protection")else SmartBuff("Shadow Protection")end
+END
+MACRO 16777234 " " Spell_Holy_PrayerOfHealing02
+/script if nil then CastSpellByName("Prayer of Healing") end
+/run if(IsAltKeyDown())then CastSpellByname("Prayer of Healing(Rank 1)")else CastSpellByName("Prayer of Healing")end
+END
+MACRO 16777239 " " Spell_Holy_PowerInfusion
+/run if nil then CastSpellByName("Power Infusion") end
+/run local t=UnitName(SmartCastFriend("Power Infusion"))SendChatMessage("Power Infusion on YOU","whisper","orcish",t)
+END
+MACRO 16777221 " " Spell_Holy_WordFortitude
+/script if nil then CastSpellByName("Power Word: Fortitude") end
+/run if(IsAltKeyDown())then SmartCast("Prayer of Fortitude")else SmartBuff("Power Word: Fortitude")end
+END
+MACRO 16777220 " " Spell_Holy_PowerWordShield
+/script if nil then CastSpellByName("Power Word: Shield") end
+/run SmartCastFriend("Power Word: Shield")
+END
+MACRO 16777219 " " Spell_Holy_Renew
+/script if nil then CastSpellByName("Flash Heal") end
+/run if(IsAltKeyDown())then SmartCast("Renew(Rank 5)",4)else SmartBuff("Renew")end
+END
+MACRO 16777222 " " Spell_Holy_Resurrection
+/run if nil then CastSpellByName("Resurrection") end
+/run local t=SmartCast("Resurrection",4)if(UnitIsDead(t))then SendChatMessage("Resurrection on "..UnitName(t),"SAY")end
+END
+```

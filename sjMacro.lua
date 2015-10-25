@@ -192,11 +192,13 @@ end
 function sjMacro_SmartBuff(spell)
     local target, have_target = GetSmartTarget(4)
     local rank = sjMacro_SmartSpellRank(spell, target)
-    local full_spell = format("%s(Rank %s)", spell, rank)
-    SmartCastHelper(full_spell, target, have_target)
-    --print(format("spell : %q", spell))
-    --print(format("full_spell : %q", full_spell))
-    --print(format(" target : %q (have_target: %q)", target, tostring(have_target)))
+    if (rank) then
+        local full_spell = format("%s(Rank %s)", spell, rank)
+        SmartCastHelper(full_spell, target, have_target)
+        --print(format("spell : %q", spell))
+        --print(format("full_spell : %q", full_spell))
+        --print(format(" target : %q (have_target: %q)", target, tostring(have_target)))
+    end
 end
 
 -- Global function aliases
@@ -209,53 +211,53 @@ SmartCast = sjMacro_SmartCast
 
 -- Smart cast spell
 --function sjMacro_SmartCast(spell)
-    --local haveTarget = UnitExists("target")
-    --local target = "player"
-    --local f = GetMouseFocus()
-    --if (f.unit) then
-        --target = f.unit
-    --elseif (UnitExists("mouseover")) then
-        --target = "mouseover"
-    --elseif (UnitExists("target")) then
-        --target = "target"
-    --end
-    --if (UnitIsUnit(target, "target")) then
-        --CastSpellByName(spell)
-    --else
-        --TargetUnit(target)
-        --CastSpellByName(spell)
-        --if (haveTarget) then
-            --TargetLastTarget()
-        --else
-            --ClearTarget()
-        --end
-    --end
-    --return target
+--local haveTarget = UnitExists("target")
+--local target = "player"
+--local f = GetMouseFocus()
+--if (f.unit) then
+--target = f.unit
+--elseif (UnitExists("mouseover")) then
+--target = "mouseover"
+--elseif (UnitExists("target")) then
+--target = "target"
+--end
+--if (UnitIsUnit(target, "target")) then
+--CastSpellByName(spell)
+--else
+--TargetUnit(target)
+--CastSpellByName(spell)
+--if (haveTarget) then
+--TargetLastTarget()
+--else
+--ClearTarget()
+--end
+--end
+--return target
 --end
 
 -- Smart cast friend spell
 --function sjMacro_SmartCastFriend(spell)
-    --local haveTarget = UnitExists("target")
-    --local target = "player"
-    --local f = GetMouseFocus()
-    --if (f.unit and UnitReaction(f.unit, "player") > 4) then
-        --target = f.unit
-    --elseif (UnitExists("mouseover") and UnitReaction("player", "mouseover") > 4) then
-        --target = "mouseover"
-    --elseif (UnitExists("target") and UnitReaction("player", "target") > 4) then
-        --target = "target"
-    --end
-    --if (UnitIsUnit(target, "target")) then
-        --CastSpellByName(spell)
-    --else
-        --TargetUnit(target)
-        --CastSpellByName(spell)
-        --if (haveTarget) then
-            --TargetLastTarget()
-        --else
-            --ClearTarget()
-        --end
-    --end
-    --return target
+--local haveTarget = UnitExists("target")
+--local target = "player"
+--local f = GetMouseFocus()
+--if (f.unit and UnitReaction(f.unit, "player") > 4) then
+--target = f.unit
+--elseif (UnitExists("mouseover") and UnitReaction("player", "mouseover") > 4) then
+--target = "mouseover"
+--elseif (UnitExists("target") and UnitReaction("player", "target") > 4) then
+--target = "target"
+--end
+--if (UnitIsUnit(target, "target")) then
+--CastSpellByName(spell)
+--else
+--TargetUnit(target)
+--CastSpellByName(spell)
+--if (haveTarget) then
+--TargetLastTarget()
+--else
+--ClearTarget()
+--end
+--end
+--return target
 --end
 
