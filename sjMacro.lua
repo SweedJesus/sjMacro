@@ -144,6 +144,7 @@ end
 -- reaction: Minimum reaction required for target
 -- TODO: Implement customizable priority
 local function GetSmartTarget(reaction)
+    reaction = reaction or 0
     local have_target = UnitExists("target")
     local target = "player"
     local f = GetMouseFocus()
@@ -184,6 +185,7 @@ function sjMacro_SmartCast(spell, reaction)
     SmartCastHelper(spell, target, have_target)
     --print(format("spell : %q", spell))
     --print(format("target : %q (have_target : %q)", target, tostring(have_target)))
+    return target
 end
 
 -- Smart cast buff
