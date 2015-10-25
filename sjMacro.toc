@@ -1,0 +1,6 @@
+## Interface: 11200
+## Title: sjMacro
+## Author: SweedJesus (Miraculin on Nostalrius)
+## DefaultState: Enabled
+
+sjMacro.lua
