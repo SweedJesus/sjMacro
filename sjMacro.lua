@@ -1,3 +1,10 @@
+-- Buffs cannot be cast on targets that are a level less than the level that 
+-- the rank of the buff was learned at minus 10 and only seems to apply to
+-- spells which are instant cast (most buffs).
+-- e.g. target is level 13; can cast Power Word: Shield (Rank 3) because it was
+-- learned at level 18 (13 is less than 18 minus 10 or 8) but cannot cast Power
+-- Word: Fortitude (Rank 3) because it was learned at level 24 (13 is not less
+-- than 24 minus 10 or 14)
 
 -- Print to chat frame
 local function print(msg)
@@ -16,143 +23,136 @@ local function ripairs(t)
 end
 
 -- Addon table
-sjMacro = sjMacro or {}
-
--- ----------------------------------------------------------------------------
--- Smart Buff Rank
--- ----------------------------------------------------------------------------
--- Buffs cannot be cast on targets that are a level less than the level that 
--- the rank of the buff was learned at minus 10 and only seems to apply to
--- spells which are instant cast (most buffs).
--- e.g. target is level 13; can cast Power Word: Shield (Rank 3) because it was
--- learned at level 18 (13 is less than 18 minus 10 or 8) but cannot cast Power
--- Word: Fortitude (Rank 3) because it was learned at level 24 (13 is not less
--- than 24 minus 10 or 14)
+sjMacro = sjMacro or {
+    best_buff_enabled = false
+}
 
 local _, class = UnitClass("player")
 
-if (class == "PRIEST") then
-    print("Initializing Priest mode")
+-- Mage
+local AM   = "Amplify Magic"
+local AI   = "Arcane Intellect"
+local DM   = "Dampen Magic"
 
-    -- Disc
-    local DS = "Divine Spirit"
-    local PWF = "Power Word: Fortitude"
-    local PWS = "Power Word: Shield"
-    -- Holy
-    local R = "Renew"
-    -- Shadow
-    local SP = "Shadow Protection"
+local DM_T = "Interface\\Icons\\Spell_Nature_AbolishMagic"
+local AM_T = "Interface\\Icons\\Spell_Holy_FlashHeal"
+local AI_T = "Interface\\Icons\\Spell_Holy_MagicalSentry"
 
-    -- Textures
-    local DS_T  = "Interface\\Icons\\Spell_Holy_DivineSpirit"
-    local PWF_T = "Interface\\Icons\\Spell_Holy_WordFortitude"
-    local PWS_T = "Interface\\Icons\\Spell_Holy_PowerWordShield"
-    local R_T   = "Interface\\Icons\\Spell_Holy_Renew"
-    local SP_T  = "Interface\\Icons\\Spell_Shadow_AntiShadow"
+-- Priest
+local DS    = "Divine Spirit"
+local PWF   = "Power Word: Fortitude"
+local PWS   = "Power Word: Shield"
+local R     = "Renew"
+local SP    = "Shadow Protection"
 
-    sjMacro.spells_level_learned = {
-        -- Disc
-        [DS]  = { 40, 42, 56 },
-        [PWF] = {  1, 12, 24, 36, 48, 60 },
-        [PWS] = {  6, 12, 18, 24, 30, 36, 42, 48, 54, 60 },
-        [R]   = {  1, 14, 20, 26, 32, 38, 44, 50, 56 },
-        [SP]  = { 30, 42, 56 }
-    }
+local DS_T  = "Interface\\Icons\\Spell_Holy_DivineSpirit"
+local PWF_T = "Interface\\Icons\\Spell_Holy_WordFortitude"
+local PWS_T = "Interface\\Icons\\Spell_Holy_PowerWordShield"
+local R_T   = "Interface\\Icons\\Spell_Holy_Renew"
+local SP_T  = "Interface\\Icons\\Spell_Shadow_AntiShadow"
 
-    sjMacro.spells_best_rank = {
-        -- Disc
-        [DS]  = nil,
-        [PWF] = nil,
-        [PWS] = nil,
-        [R] = nil,
-        [SP]  = nil
-    }
+-- ----------------------------------------------------------------------------
+-- Functions
+-- ----------------------------------------------------------------------------
 
-    local spells_level_learned = sjMacro.spells_level_learned
-    local spells_best_rank = sjMacro.spells_best_rank
-
-    -- Catalogs the player's best ranks of spells
-    function sjMacro_UpdateBestBuffRanks()
-        local texture
-
-        -- Holy
-        local _, _, tab1_offset, tab1_num_spells = GetSpellTabInfo(2)
-        local DS_rank, PWF_rank, PWS_rank = 0, 0, 0
-        for i = 1, tab1_num_spells do
-            texture = GetSpellTexture(tab1_offset + i, "spell")
-            if (texture == DS_T) then
-                DS_rank = DS_rank + 1
-            elseif (texture == PWF_T) then
-                PWF_rank = PWF_rank + 1
-            elseif (texture == PWS_T) then
-                PWS_rank = PWS_rank + 1
-            end
-        end
-
-        -- Disc
-        local _, _, tab2_offset, tab2_num_spells = GetSpellTabInfo(3)
-        local R_rank = 0
-        for i = 1, tab2_num_spells do
-            texture = GetSpellTexture(tab2_offset + i, "spell")
-            if (texture == R_T) then
-                R_rank = R_rank + 1
-            end
-        end
-
-        -- Shadow
-        local _, _, tab3_offset, tab3_num_spells = GetSpellTabInfo(4)
-        local SP_rank = 0
-        for i = 1, tab3_num_spells do
-            texture = GetSpellTexture(tab3_offset + i, "spell")
-            if (texture == SP_T) then
-                SP_rank = SP_rank + 1
-            end
-        end
-
-        -- Update ranks
-        spells_best_rank[DS]  = DS_rank
-        spells_best_rank[PWF] = PWF_rank
-        spells_best_rank[PWS] = PWS_rank
-        spells_best_rank[R]   = R_rank
-        spells_best_rank[SP]  = SP_rank
+-- Initialize the best buff features for classes with buffs
+function sjMacro.BestBuffInit()
+    local _, class = UnitClass("player")
+    if not (class == "MAGE" or class == "PRIEST") then
+        return
     end
 
-    -- Initial run
-    sjMacro_UpdateBestBuffRanks()
+    sjMacro.best_buff_enabled = true
+    sjMacro.spells_best_rank = {}
 
-    function sjMacro_SmartSpellRank(spell, target)
-        assert(spells_level_learned[spell])
-        assert(UnitExists(target))
-        local target_level = UnitLevel(target)
-        local use_rank = false
-        for rank, level in ripairs(spells_level_learned[spell]) do
-            if (target_level >= level - 10) then
-                use_rank = rank
-                break
+    if class == "MAGE" then
+        sjMacro.spell_textures = {
+            [2] = { [AM_T] = AM, [AI_T] = AI, [DM_T] = DM }
+        }
+        sjMacro.spells_level_learned = {
+            -- Arcane
+            [AM] = { 18, 30, 42, 54 },
+            [AI] = {  1, 14, 28, 42, 56 },
+            [DM] = { 12, 24, 36, 48, 60 }
+        }
+    elseif class == "PRIEST" then
+        sjMacro.spell_textures = {
+            [2] = { [DS_T] = DS, [PWF_T] = PWF, [PWS_T] = PWS },
+            [3] = { [R_T] = R },
+            [4] = { [SP_T] = SP }
+        }
+        sjMacro.spells_level_learned = {
+            -- Discipline
+            [DS]  = { 40, 42, 56 },
+            [PWF] = {  1, 12, 24, 36, 48, 60 },
+            [PWS] = {  6, 12, 18, 24, 30, 36, 42, 48, 54, 60 },
+            -- Holy
+            [R]   = {  1, 14, 20, 26, 32, 38, 44, 50, 56 },
+            -- Shadow
+            [SP]  = { 30, 42, 56 }
+        }
+    end
+
+    -- Initial update run
+    sjMacro.UpdateBestBuffRanks()
+end
+
+-- Update list of best buff ranks
+function sjMacro.UpdateBestBuffRanks()
+    if not sjMacro.best_buff_enabled then
+        return
+    end
+
+    local ranks = {}
+    local texture
+    for i,tab in pairs(sjMacro.spell_textures) do
+        local _, _, offset, num_spells = GetSpellTabInfo(i)
+        for j=0, num_spells do
+            texture = GetSpellTexture(offset + j, "spell")
+            if tab[texture] then
+                local spell = tab[texture]
+                if not ranks[spell] then
+                    ranks[spell] = 0
+                end
+                ranks[spell] = ranks[spell] + 1
             end
         end
-        return use_rank
+    end
+
+    for k,v in pairs(ranks) do
+        sjMacro.spells_best_rank[k] = v
     end
 end
 
--- ----------------------------------------------------------------------------
--- Global functions
--- ----------------------------------------------------------------------------
+-- Get the buff best rank for unitID
+function sjMacro.GetSmartBuffRank(spell, unitID)
+    assert(sjMacro.spells_level_learned[spell])
+    assert(UnitExists(unitID))
+    local target_level = UnitLevel(unitID)
+    local use_rank = false
+    for rank, level in ripairs(sjMacro.spells_level_learned[spell]) do
+        if target_level >= level - 10 then
+            use_rank = rank
+            break
+        end
+    end
+    return use_rank
+end
 
 -- Returns the unitID of what to cast on and whether the player already has
 -- a target (in order to target last target correctly).
 -- reaction: Minimum reaction required for target
 -- TODO: Implement customizable priority
-local function GetSmartTarget(reaction)
+local function SmartTargetHelper(reaction)
     reaction = reaction or 0
     local have_target = UnitExists("target")
     local target = "player"
     local f = GetMouseFocus()
-    if (f.unit and UnitReaction(f.unit, "player") > reaction) then
+    if f.unit and UnitReaction(f.unit, "player") > reaction then
         target = f.unit
-    elseif (UnitExists("mouseover") and UnitReaction("player", "mouseover") > reaction) then
+    elseif UnitExists("mouseover") and UnitReaction("player", "mouseover") > reaction then
         target = "mouseover"
-    elseif (UnitExists("target") and UnitReaction("player", "target") > reaction) then
+    elseif UnitExists("target") and UnitReaction("player", "target") > reaction then
         target = "target"
     end
     return target, have_target
@@ -164,12 +164,12 @@ end
 -- target: unitID to cast on
 -- have_target: If currently have a target (for target last target)
 local function SmartCastHelper(spell, target, have_target)
-    if (UnitIsUnit(target, "target")) then
+    if UnitIsUnit(target, "target") then
         CastSpellByName(spell)
     else
         TargetUnit(target)
         CastSpellByName(spell)
-        if (have_target) then
+        if have_target then
             TargetLastTarget()
         else
             ClearTarget()
@@ -180,8 +180,8 @@ end
 -- Smart cast spell
 -- spell: Spell to cast
 -- reaction: Minimum reaction required for target
-function sjMacro_SmartCast(spell, reaction)
-    local target, have_target = GetSmartTarget(reaction)
+function sjMacro.SmartCast(spell, reaction)
+    local target, have_target = SmartTargetHelper(reaction)
     SmartCastHelper(spell, target, have_target)
     --print(format("spell : %q", spell))
     --print(format("target : %q (have_target : %q)", target, tostring(have_target)))
@@ -189,10 +189,17 @@ function sjMacro_SmartCast(spell, reaction)
 end
 
 -- Smart cast buff
-function sjMacro_SmartBuff(spell)
-    local target, have_target = GetSmartTarget(4)
-    local rank = sjMacro_SmartSpellRank(spell, target)
-    if (rank) then
+function sjMacro.SmartBuff(spell)
+    if not sjMacro.best_buff_enabled then
+        return
+    end
+
+    local target, have_target = SmartTargetHelper(4)
+    local rank = sjMacro.GetSmartBuffRank(spell, target)
+    if rank then
+        if rank > sjMacro.spells_best_rank[spell] then
+            rank = sjMacro.spells_best_rank[spell]
+        end
         local full_spell = format("%s(Rank %s)", spell, rank)
         SmartCastHelper(full_spell, target, have_target)
         --print(format("spell : %q", spell))
@@ -202,62 +209,8 @@ function sjMacro_SmartBuff(spell)
 end
 
 -- Global function aliases
-SmartBuff = sjMacro_SmartBuff
-SmartCast = sjMacro_SmartCast
+SmartBuff = sjMacro.SmartBuff
+SmartCast = sjMacro.SmartCast
 
--- ----------------------------------------------------------------------------
--- Deprecated code
--- ----------------------------------------------------------------------------
-
--- Smart cast spell
---function sjMacro_SmartCast(spell)
---local haveTarget = UnitExists("target")
---local target = "player"
---local f = GetMouseFocus()
---if (f.unit) then
---target = f.unit
---elseif (UnitExists("mouseover")) then
---target = "mouseover"
---elseif (UnitExists("target")) then
---target = "target"
---end
---if (UnitIsUnit(target, "target")) then
---CastSpellByName(spell)
---else
---TargetUnit(target)
---CastSpellByName(spell)
---if (haveTarget) then
---TargetLastTarget()
---else
---ClearTarget()
---end
---end
---return target
---end
-
--- Smart cast friend spell
---function sjMacro_SmartCastFriend(spell)
---local haveTarget = UnitExists("target")
---local target = "player"
---local f = GetMouseFocus()
---if (f.unit and UnitReaction(f.unit, "player") > 4) then
---target = f.unit
---elseif (UnitExists("mouseover") and UnitReaction("player", "mouseover") > 4) then
---target = "mouseover"
---elseif (UnitExists("target") and UnitReaction("player", "target") > 4) then
---target = "target"
---end
---if (UnitIsUnit(target, "target")) then
---CastSpellByName(spell)
---else
---TargetUnit(target)
---CastSpellByName(spell)
---if (haveTarget) then
---TargetLastTarget()
---else
---ClearTarget()
---end
---end
---return target
---end
+sjMacro.BestBuffInit()
 
