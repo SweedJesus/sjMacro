@@ -1,5 +1,9 @@
 Adds a couple Lua functions for mouse-over casting and smart buffing.
 
+>   Currently not implemented:
+>   1.  Paladins
+>   2.  Druid Mark/Gift of the Wild (use the same icon)
+
 Functions in this addon intentionally break if not used correctly so refer to
 this readme for usage examples. This is to keep the functions as small as
 possible to keep that fast.
