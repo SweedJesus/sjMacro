@@ -8,6 +8,14 @@ Functions in this addon intentionally break if not used correctly so refer to
 this readme for usage examples. This is to keep the functions as small as
 possible to keep that fast.
 
+## Current target priority:
+
+(TODO: Make this order customizable)
+
+1.  Mouse-over
+2.  Target
+3.  Player
+
 ## Current functions:
 
 ### 1. `SmartCast(spell, reaction)`
