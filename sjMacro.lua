@@ -259,7 +259,7 @@ function sjMacro_SmartBuff(spell)
     end
 
     local target, have_target = SmartTargetHelper(4)
-    local rank = sjMacro.GetSmartBuffRank(spell, target)
+    local rank = sjMacro_GetSmartBuffRank(spell, target)
     if rank then
         if rank > sjMacro.spells_best_rank[spell] then
             rank = sjMacro.spells_best_rank[spell]
