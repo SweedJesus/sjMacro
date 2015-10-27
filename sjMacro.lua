@@ -187,7 +187,10 @@ end
 -- Get the buff best rank for unitID
 function sjMacro_GetSmartBuffRank(spell, unitID)
     assert(sjMacro.spells_level_learned[spell])
-    assert(UnitExists(unitID))
+    --assert(UnitExists(unitID))
+    if not unitID then
+        return sjMacro.spells_best_rank[spell]
+    end
     local target_level = UnitLevel(unitID)
     local use_rank = false
     for rank, level in ripairs(sjMacro.spells_level_learned[spell]) do
@@ -206,7 +209,7 @@ end
 local function SmartTargetHelper(reaction)
     reaction = reaction or 0
     local have_target = UnitExists("target")
-    local target = "player"
+    local target = false
     local f = GetMouseFocus()
     if f.unit and UnitReaction(f.unit, "player") > reaction then
         target = f.unit
@@ -224,7 +227,7 @@ end
 -- target: unitID to cast on
 -- have_target: If currently have a target (for target last target)
 local function SmartCastHelper(spell, target, have_target)
-    if UnitIsUnit(target, "target") then
+    if not target or UnitIsUnit(target, "target") then
         CastSpellByName(spell)
     else
         TargetUnit(target)
