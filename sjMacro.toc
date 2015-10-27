@@ -3,4 +3,4 @@
 ## Author: SweedJesus (Miraculin on Nostalrius)
 ## DefaultState: Enabled
 
-sjMacro.lua
+sjMacro.xml

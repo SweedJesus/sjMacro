@@ -22,11 +22,6 @@ local function ripairs(t)
     return ripairs_it, t, getn(t)+1
 end
 
--- Addon table
-sjMacro = sjMacro or {
-    best_buff_enabled = false
-}
-
 local _, class = UnitClass("player")
 
 -- Druid
@@ -71,7 +66,7 @@ local SP, SP_T   = "Shadow Protection", "Interface\\Icons\\Spell_Shadow_AntiShad
 -- ----------------------------------------------------------------------------
 
 -- Initialize the best buff features for classes with buffs
-function sjMacro.BestBuffInit()
+function sjMacro_OnLoad()
     local _, class = UnitClass("player")
     if not (class == "MAGE" or class == "PRIEST") then
         return
@@ -153,17 +148,17 @@ function sjMacro.BestBuffInit()
             [DS]  = { 40, 42, 56 },
             [PWF] = {  1, 12, 24, 36, 48, 60 },
             [PWS] = {  6, 12, 18, 24, 30, 36, 42, 48, 54, 60 },
-            [RN]   = {  1, 14, 20, 26, 32, 38, 44, 50, 56 },
+            [RN]  = {  1, 14, 20, 26, 32, 38, 44, 50, 56 },
             [SP]  = { 30, 42, 56 }
         }
     end
 
     -- Initial update run
-    sjMacro.UpdateBestBuffRanks()
+    sjMacro_UpdateBestBuffRanks()
 end
 
 -- Update list of best buff ranks
-function sjMacro.UpdateBestBuffRanks()
+function sjMacro_UpdateBestBuffRanks()
     if not sjMacro.best_buff_enabled then
         return
     end
@@ -190,7 +185,7 @@ function sjMacro.UpdateBestBuffRanks()
 end
 
 -- Get the buff best rank for unitID
-function sjMacro.GetSmartBuffRank(spell, unitID)
+function sjMacro_GetSmartBuffRank(spell, unitID)
     assert(sjMacro.spells_level_learned[spell])
     assert(UnitExists(unitID))
     local target_level = UnitLevel(unitID)
@@ -245,7 +240,7 @@ end
 -- Smart cast spell
 -- spell: Spell to cast
 -- reaction: Minimum reaction required for target
-function sjMacro.SmartCast(spell, reaction)
+function sjMacro_SmartCast(spell, reaction)
     local target, have_target = SmartTargetHelper(reaction)
     SmartCastHelper(spell, target, have_target)
     --print(format("spell : %q", spell))
@@ -254,7 +249,7 @@ function sjMacro.SmartCast(spell, reaction)
 end
 
 -- Smart cast buff
-function sjMacro.SmartBuff(spell)
+function sjMacro_SmartBuff(spell)
     if not sjMacro.best_buff_enabled then
         return
     end
@@ -278,8 +273,6 @@ function sjMacro.SmartBuff(spell)
 end
 
 -- Global function aliases
-SmartBuff = sjMacro.SmartBuff
-SmartCast = sjMacro.SmartCast
-
-sjMacro.BestBuffInit()
+SmartBuff = sjMacro_SmartBuff
+SmartCast = sjMacro_SmartCast
 
