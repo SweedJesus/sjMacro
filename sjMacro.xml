@@ -9,8 +9,9 @@
             <OnLoad>
                 sjMacro_OnLoad()
             </OnLoad>
-            <!--<OnEvent>-->
-            <!--</OnEvent>-->
+            <OnEvent>
+                sjMacro_OnEvent(event)
+            </OnEvent>
         </Scripts>
     </Frame>
 </Ui>
