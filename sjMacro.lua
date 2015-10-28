@@ -25,19 +25,25 @@ end
 local _, class = UnitClass("player")
 
 -- Druid
--- Balance
-local T,   T_T   = "Thorns", "Interface\\Icons\\Spell_Nature_Thorns"
--- Restoration
---local MOW, MOW_T = "Mark of the Wild", "Interface\\Icons\\Spell_Nature_Regeneration"
---local GOW, GOW_T = "Gift of the Wild", "Interface\\Icons\\Spell_Nature_Regeneration"
-local RG,  RG_T  = "Regrowth", "Interface\\Icons\\Spell_Nature_Rejuvenation"
-local RJ,  RJ_T  = "Rejuvenation", "Interface\\Icons\\Spell_Nature_ResistNature"
+local T = "Thorns"
+local T_T = "Interface\\Icons\\Spell_Nature_Thorns"
+
+--local GOW = "Gift of the Wild"
+--local GOW_T = "Interface\\Icons\\Spell_Nature_Regeneration"
+--local MOW = "Mark of the Wild"
+--local MOW_T = "Interface\\Icons\\Spell_Nature_Regeneration"
+local RG = "Regrowth"
+local RG_T = "Interface\\Icons\\Spell_Nature_Rejuvenation"
+local RJ = "Rejuvenation"
+local RJ_T = "Interface\\Icons\\Spell_Nature_ResistNature"
 
 -- Mage
--- Arcane
-local AM, AM_T = "Amplify Magic", "Interface\\Icons\\Spell_Holy_FlashHeal"
-local AI, AI_T = "Arcane Intellect", "Interface\\Icons\\Spell_Holy_MagicalSentry"
-local DM, DM_T = "Dampen Magic", "Interface\\Icons\\Spell_Nature_AbolishMagic"
+local AI = "Arcane Intellect"
+local AI_T = "Interface\\Icons\\Spell_Holy_MagicalSentry"
+local AM = "Amplify Magic"
+local AM_T = "Interface\\Icons\\Spell_Holy_FlashHeal"
+local DM = "Dampen Magic"
+local DM_T = "Interface\\Icons\\Spell_Nature_AbolishMagic"
 
 -- Paladin
 -- Holy
@@ -53,20 +59,34 @@ local DM, DM_T = "Dampen Magic", "Interface\\Icons\\Spell_Nature_AbolishMagic"
 
 -- Priest
 -- Discipline
-local DS, DS_T   = "Divine Spirit", "Interface\\Icons\\Spell_Holy_DivineSpirit"
-local PWF, PWF_T = "Power Word: Fortitude", "Interface\\Icons\\Spell_Holy_WordFortitude"
-local PWS, PWS_T = "Power Word: Shield", "Interface\\Icons\\Spell_Holy_PowerWordShield"
+local DS = "Divine Spirit"
+local DS_T = "Interface\\Icons\\Spell_Holy_DivineSpirit"
+local PWF = "Power Word: Fortitude"
+local PWF_T = "Interface\\Icons\\Spell_Holy_WordFortitude"
+local PWS = "Power Word: Shield"
+local PWS_T = "Interface\\Icons\\Spell_Holy_PowerWordShield"
 -- Holy
-local RN, RN_T   = "Renew", "Interface\\Icons\\Spell_Holy_Renew"
+local RN = "Renew"
+local RN_T = "Interface\\Icons\\Spell_Holy_Renew"
 -- Shadow Protection
-local SP, SP_T   = "Shadow Protection", "Interface\\Icons\\Spell_Shadow_AntiShadow"
+local SP = "Shadow Protection"
+local SP_T = "Interface\\Icons\\Spell_Shadow_AntiShadow"
 
 -- ----------------------------------------------------------------------------
 -- Functions
 -- ----------------------------------------------------------------------------
 
--- Initialize the best buff features for classes with buffs
 function sjMacro_OnLoad()
+    this:RegisterEvent("PLAYER_ENTERING_WORLD")
+
+    this.target_priority = {
+        "mouseover",
+        "target",
+        "player"
+    }
+end
+
+function sjMacro_OnEvent(event)
     local _, class = UnitClass("player")
     if not (class == "MAGE" or class == "PRIEST") then
         return
@@ -83,9 +103,7 @@ function sjMacro_OnLoad()
             [4] = {
                 --[MOW_T] = MOW,
                 --[GOW_T] = GOW,
-                [RG_T] = RG,
-                [RJ_T] = RJ
-            }
+                [RG_T] = RG, [RJ_T] = RJ }
         }
         sjMacro.spells_level_learned = {
             --[MOW] = {  1, 10, 20, 30, 40, 50, 60 },
@@ -97,11 +115,7 @@ function sjMacro_OnLoad()
     elseif class == "MAGE" then
         sjMacro.spell_textures = {
             -- Arcane
-            [2] = {
-                [AM_T] = AM,
-                [AI_T] = AI,
-                [DM_T] = DM
-            }
+            [2] = { [AM_T] = AM, [AI_T] = AI, [DM_T] = DM }
         }
         sjMacro.spells_level_learned = {
             [AM] = { 18, 30, 42, 54 },
