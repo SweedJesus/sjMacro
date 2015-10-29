@@ -77,9 +77,9 @@ local SP_T = "Interface\\Icons\\Spell_Shadow_AntiShadow"
 -- ----------------------------------------------------------------------------
 
 function sjMacro_OnLoad()
-    this:RegisterEvent("PLAYER_ENTERING_WORLD")
+    sjMacro:RegisterEvent("PLAYER_ENTERING_WORLD")
 
-    this.target_priority = {
+    sjMacro.target_priority = {
         "mouseover",
         "target",
         "player"
@@ -214,6 +214,30 @@ function sjMacro_GetSmartBuffRank(spell, unitID)
         end
     end
     return use_rank
+end
+
+-- target
+-- player
+-- mouseover
+local HATED, HOSTILE, UNFRIENDLY, NEUTRAL = 1, 2, 3, 4
+local FRIENDLY, HONORED, REVERED, EXALTED = 5, 6, 7, 8
+-- Reaction: 1-hated, 2-hostile, 3-unfriendly, 4-neutral, 5-friendly,
+-- 6-honored, 7-revered, 8-exalted
+-- @param min Minimum reaction
+-- @param max Maximum reaction
+local function GetTargetTest(min, max)
+    min = min or HATED
+    max = min or EXALTED
+    local target, reaction = false
+    for _, unitID in sjMacro.target_priority do
+        reaction = UnitReaction("player", unitID)
+        if UnitExists(unitID) and
+            reaction > min and
+            reaction < max then
+            target = unitID
+            break
+        end
+    end
 end
 
 -- Returns the unitID of what to cast on and whether the player already has
