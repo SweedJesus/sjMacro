@@ -6,6 +6,21 @@
 -- Word: Fortitude (Rank 3) because it was learned at level 24 (13 is not less
 -- than 24 minus 10 or 14)
 
+-- ----------------------------------------------------------------------------
+-- Target Priority:
+--
+-- Edit this table to change the order of target priority for smart targeting
+-- (To put spell on cursor when no valid mouseover or target are present
+-- remove the "player" entry)
+
+local TARGET_PRIORITY = {
+    "mouseover",
+    "target",
+    "player"
+}
+
+-- ----------------------------------------------------------------------------
+
 -- Print to chat frame
 local function print(msg)
     DEFAULT_CHAT_FRAME:AddMessage("|cffff0000sjMacro|r "..msg)
@@ -21,8 +36,6 @@ local function ripairs(t)
     end
     return ripairs_it, t, getn(t)+1
 end
-
-local _, class = UnitClass("player")
 
 -- Druid
 local T = "Thorns"
@@ -78,12 +91,6 @@ local SP_T = "Interface\\Icons\\Spell_Shadow_AntiShadow"
 
 function sjMacro_OnLoad()
     sjMacro:RegisterEvent("PLAYER_ENTERING_WORLD")
-
-    sjMacro.target_priority = {
-        "mouseover",
-        "target",
-        "player"
-    }
 end
 
 function sjMacro_OnEvent(event)
@@ -103,7 +110,8 @@ function sjMacro_OnEvent(event)
             [4] = {
                 --[MOW_T] = MOW,
                 --[GOW_T] = GOW,
-                [RG_T] = RG, [RJ_T] = RJ }
+                [RG_T] = RG, [RJ_T] = RJ
+            }
         }
         sjMacro.spells_level_learned = {
             --[MOW] = {  1, 10, 20, 30, 40, 50, 60 },
@@ -122,33 +130,33 @@ function sjMacro_OnEvent(event)
             [AI] = {  1, 14, 28, 42, 56 },
             [DM] = { 12, 24, 36, 48, 60 }
         }
-    --[[
-       [elseif class == "PALADIN" then
-       [    sjMacro.spell_textures = {
-       [        -- Holy
-       [        [2] = {
-       [            [BOW_T]  = BOW,
-       [            [GBOW_T] = GBOW_T
-       [        },
-       [        -- Protection
-       [        [3] = {
-       [            [BOP_T]  = BOP,
-       [            [BOF_T]  = BOF,
-       [            [BOK_T]  = BOK,
-       [            [BOSC_T] = BOSC,
-       [            [BOSN_T] = BOSR
-       [        -- Retribution
-       [        [4] = { [MW_T] = MW, [RG_T] = RG, [RJ_T] = RJ }
-       [    }
-       [    sjMacro.spells_level_learned = {
-       [        [BOL]  = { 40, 50, 60 },
-       [        [BOM]  = {  4, 12, 22, 32, 42, 52 },
-       [        [BOP]  = { 10, 24, 38 },
-       [        [BOSC] = { 46, 54 },
-       [        [BOSN] = { 30, 40, 50, 60 },
-       [        [BOW]  = { 14, 24, 34, 44, 54, 60 }
-       [    }
-       ]]
+        --[[
+        [elseif class == "PALADIN" then
+        [    sjMacro.spell_textures = {
+        [        -- Holy
+        [        [2] = {
+        [            [BOW_T]  = BOW,
+        [            [GBOW_T] = GBOW_T
+        [        },
+        [        -- Protection
+        [        [3] = {
+        [            [BOP_T]  = BOP,
+        [            [BOF_T]  = BOF,
+        [            [BOK_T]  = BOK,
+        [            [BOSC_T] = BOSC,
+        [            [BOSN_T] = BOSR
+        [        -- Retribution
+        [        [4] = { [MW_T] = MW, [RG_T] = RG, [RJ_T] = RJ }
+        [    }
+        [    sjMacro.spells_level_learned = {
+        [        [BOL]  = { 40, 50, 60 },
+        [        [BOM]  = {  4, 12, 22, 32, 42, 52 },
+        [        [BOP]  = { 10, 24, 38 },
+        [        [BOSC] = { 46, 54 },
+        [        [BOSN] = { 30, 40, 50, 60 },
+        [        [BOW]  = { 14, 24, 34, 44, 54, 60 }
+        [    }
+        ]]
     elseif class == "PRIEST" then
         sjMacro.spell_textures = {
             -- Discipline
@@ -159,7 +167,7 @@ function sjMacro_OnEvent(event)
             [4] = { [SP_T] = SP }
         }
         sjMacro.spells_level_learned = {
-            [DS]  = { 40, 42, 56 },
+            [DS]  = { 30, 40, 50, 60 },
             [PWF] = {  1, 12, 24, 36, 48, 60 },
             [PWS] = {  6, 12, 18, 24, 30, 36, 42, 48, 54, 60 },
             [RN]  = {  1, 14, 20, 26, 32, 38, 44, 50, 56 },
@@ -216,28 +224,22 @@ function sjMacro_GetSmartBuffRank(spell, unitID)
     return use_rank
 end
 
--- target
--- player
--- mouseover
-local HATED, HOSTILE, UNFRIENDLY, NEUTRAL = 1, 2, 3, 4
-local FRIENDLY, HONORED, REVERED, EXALTED = 5, 6, 7, 8
 -- Reaction: 1-hated, 2-hostile, 3-unfriendly, 4-neutral, 5-friendly,
 -- 6-honored, 7-revered, 8-exalted
 -- @param min Minimum reaction
 -- @param max Maximum reaction
-local function GetTargetTest(min, max)
-    min = min or HATED
-    max = min or EXALTED
+function sjMacro_SmartTarget(min, max)
+    min = min or 1
+    max = max or 8
     local target, reaction = false
-    for _, unitID in sjMacro.target_priority do
+    for _, unitID in TARGET_PRIORITY do
         reaction = UnitReaction("player", unitID)
-        if UnitExists(unitID) and
-            reaction > min and
-            reaction < max then
+        if UnitExists(unitID) and reaction >= min and reaction <= max then
             target = unitID
             break
         end
     end
+    return target
 end
 
 -- Returns the unitID of what to cast on and whether the player already has
@@ -247,7 +249,7 @@ end
 local function SmartTargetHelper(reaction)
     reaction = reaction or 0
     local have_target = UnitExists("target")
-    local target = false
+    local target = "player"
     local f = GetMouseFocus()
     if f.unit and UnitReaction(f.unit, "player") > reaction then
         target = f.unit
@@ -282,7 +284,7 @@ end
 -- spell: Spell to cast
 -- reaction: Minimum reaction required for target
 function sjMacro_SmartCast(spell, reaction)
-    local target, have_target = SmartTargetHelper(reaction)
+    local target, have_target = sjMacro_SmartTarget(reaction)
     SmartCastHelper(spell, target, have_target)
     --print(format("spell : %q", spell))
     --print(format("target : %q (have_target : %q)", target, tostring(have_target)))
@@ -299,7 +301,7 @@ function sjMacro_SmartBuff(spell)
         return
     end
 
-    local target, have_target = SmartTargetHelper(4)
+    local target, have_target = sjMacro_SmartTarget(4)
     local rank = sjMacro_GetSmartBuffRank(spell, target)
     if rank then
         if rank > sjMacro.spells_best_rank[spell] then
