@@ -12,6 +12,9 @@
 -- Edit this table to change the order of target priority for smart targeting
 -- (To put spell on cursor when no valid mouseover or target are present
 -- remove the "player" entry)
+--
+-- Valid UnitID's:
+-- player, pet, target, mouseover, party1-4, partypet1-4, raid1-40, raidpet1-40
 
 local TARGET_PRIORITY = {
     "mouseover",
