@@ -18,7 +18,7 @@ possible to keep that fast.
 
 ## Current functions:
 
-### 1. `SmartCast(spell, min_reaction, max_reaction)`
+### 1. `SmartCast(spell, [min_reaction, [max_reaction]])`
 -   `spell` is the string of the spell to cast (can include a specific rank)
 -   `reaction` is the standing of the player to the target
     -   1 = hated
@@ -30,11 +30,11 @@ possible to keep that fast.
     -   7 = revered
     -   8 = exalted
 -   Healing spells can generally only be cast on units of reaction 5 or higher
--   `min_reaction` is the minimum reaction of the target for the spell to be
+-   (optional) `min_reaction` is the minimum reaction of the target for the spell to be
     casted on. If an expected target is below, continues to the next expected
     target (e.g. targeting an enemy while casting heal with `reaction = 4`:
     enemy is below reaction level 4, so casts on player instead).
--   `max_reaction` is the opposite of `min_reaction`: ignores targets of
+-   (optional) `max_reaction` is the opposite of `min_reaction`: ignores targets of
     reaction greater than `max_reaction`
 -   Returns the [unitID](http://wowprogramming.com/docs/api_types#unitID) of
     the target the spell was casted on (unfortunately regardless of whether the
