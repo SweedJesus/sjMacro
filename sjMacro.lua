@@ -236,12 +236,17 @@ function sjMacro_SmartTarget(min, max)
     max = max or 8
     local target, reaction = false
     for _, unitID in TARGET_PRIORITY do
+        print(format("checking: %s", unitID))
+        if unitID == "mouseover" then
+            unitID = GetMouseFocus().unit or unitID
+        end
         reaction = UnitReaction("player", unitID)
         if UnitExists(unitID) and reaction >= min and reaction <= max then
             target = unitID
             break
         end
     end
+    print(format("%s %s %s", target, min, max))
     return target
 end
 
