@@ -234,9 +234,8 @@ end
 function sjMacro_SmartTarget(min, max)
     min = min or 1
     max = max or 8
-    local target, reaction = false
+    local target, have_target, reaction = false, UnitExists("target")
     for _, unitID in TARGET_PRIORITY do
-        print(format("checking: %s", unitID))
         if unitID == "mouseover" then
             unitID = GetMouseFocus().unit or unitID
         end
@@ -246,8 +245,7 @@ function sjMacro_SmartTarget(min, max)
             break
         end
     end
-    print(format("%s %s %s", target, min, max))
-    return target
+    return target, have_target
 end
 
 -- Returns the unitID of what to cast on and whether the player already has
