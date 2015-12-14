@@ -1,6 +1,7 @@
 ## Interface: 11200
-## Title: sjMacro
-## Author: SweedJesus (Miraculin on Nostalrius)
+## Title: |cffffff00s|r|cff007fffj|rMacro |cff7fff7f-Ace2-|r |cffff00001.12|r
+## Author: SweedJesus (Miraculin @ Nostalrius)
+## X-Website: https://sweedjesus.github.io/my-addons/
 ## DefaultState: Enabled
 
 sjMacro.xml
