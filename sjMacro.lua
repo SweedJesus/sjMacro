@@ -240,7 +240,7 @@ function sjMacro_SmartTarget(min, max)
             unitID = GetMouseFocus().unit or unitID
         end
         reaction = UnitReaction("player", unitID)
-        if UnitExists(unitID) and reaction >= min and reaction <= max then
+        if reaction and reaction >= min and reaction <= max then
             target = unitID
             break
         end
