@@ -102,7 +102,7 @@ end
 
 function sjMacro_OnPlayerEnteringWorld()
     local _, class = UnitClass("player")
-    if not (class == "DRUID" or class == "MAGE" or class == "PRIEST") then
+    if not (class == "DRUID" or class == "MAGE" or class == "PRIEST" or class == "PALADIN") then
         return
     end
 
@@ -124,7 +124,6 @@ function sjMacro_OnPlayerEnteringWorld()
         }
     elseif class == "PALADIN" then
         sjMacro.spellsLevelLearned = {
-            [BOL]  = { 40, 50, 60 },
             [BOM]  = {  4, 12, 22, 32, 42, 52 },
             [BOP]  = { 10, 24, 38 },
             [BOSC] = { 46, 54 },
