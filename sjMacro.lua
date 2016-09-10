@@ -41,10 +41,10 @@ local function ripairs(t)
 end
 
 -- @param unit Unit identifier string
--- @return true if unitID is visible and connected, else false
+-- @return true if unitID is visible and connected, else nil
 -- @return true if unitID is assistable, else false
 local function UnitIsValidAssist(unit)
-    return (UnitIsVisible(unit) and UnitCanAssist("player", unit)) or false
+    return UnitIsVisible(unit) and (UnitCanAssist("player", unit) or false)
 end
 
 -- Druid
@@ -174,7 +174,6 @@ function sjMacro_GetSmartBuffRank(buff, unit)
             s = s..(not first and ", " or "")..k
             first = false
         end
-        print(s)
         return
     end
     if not unit then
@@ -199,12 +198,13 @@ function sjMacro_SmartTarget(assist)
             unit = GetMouseFocus().unit or unit
         end
         isValidAssist = UnitIsValidAssist(unit)
-        if (assist == 1 and isValidAssist) or (assist == 2 and not isValidAssist) then
+        if (isValidAssist ~= nil) and
+            ((assist == 1 and isValidAssist) or
+            (assist == 2 and not isValidAssist)) then
             target = unit
             break
         end
     end
-    --DEFAULT_CHAT_FRAME:AddMessage(format("%s %s", assist, unit))
     return target, haveTarget
 end
 
