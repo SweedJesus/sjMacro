@@ -44,7 +44,7 @@ end
 -- @return true if unitID is visible and connected, else false
 -- @return true if unitID is assistable, else false
 local function UnitIsValidAssist(unit)
-    return UnitIsVisible(unit) and UnitCanAssist("player", unit)
+    return (UnitIsVisible(unit) and UnitCanAssist("player", unit)) or false
 end
 
 -- Druid
@@ -199,13 +199,12 @@ function sjMacro_SmartTarget(assist)
             unit = GetMouseFocus().unit or unit
         end
         isValidAssist = UnitIsValidAssist(unit)
-        if isValidAssist and (not assist or
-            (assist == 1 and isValidAssist) or
-            (assist == 2 and not isValidAssist)) then
+        if (assist == 1 and isValidAssist) or (assist == 2 and not isValidAssist) then
             target = unit
             break
         end
     end
+    --DEFAULT_CHAT_FRAME:AddMessage(format("%s %s", assist, unit))
     return target, haveTarget
 end
 
