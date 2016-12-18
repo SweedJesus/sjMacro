@@ -18,24 +18,13 @@ possible to keep that fast.
 
 ## Current functions:
 
-### 1. `SmartCast(spell, [min_reaction, [max_reaction]])`
+### 1. `SmartCast(spell, [reaction]])`
 -   `spell` is the string of the spell to cast (can include a specific rank)
 -   `reaction` is the standing of the player to the target
-    -   1 = hated
-    -   2 = hostile
-    -   3 = unfriendly
-    -   4 = neutral
-    -   5 = friendly
-    -   6 = honored
-    -   7 = revered
-    -   8 = exalted
+    -   0 = don't care
+    -   1 = friend only
+    -   2 = enemy only
 -   Healing spells can generally only be cast on units of reaction 5 or higher
--   (optional) `min_reaction` is the minimum reaction of the target for the spell to be
-    casted on. If an expected target is below, continues to the next expected
-    target (e.g. targeting an enemy while casting heal with `reaction = 4`:
-    enemy is below reaction level 4, so casts on player instead).
--   (optional) `max_reaction` is the opposite of `min_reaction`: ignores targets of
-    reaction greater than `max_reaction`
 -   Returns the [unitID](http://wowprogramming.com/docs/api_types#unitID) of
     the target the spell was casted on (unfortunately regardless of whether the
     spell actually cast; can't think of a way to address this)
@@ -47,19 +36,19 @@ possible to keep that fast.
 -   For use with friend only instant buffs which require down-ranking for lower
     level targets, and...
 -   **Instant heals (e.g. Renew, Rejuvenation) are included in this category**
--   Only works on friendly targets (reaction 4 or greater)
+-   Only works on friendly targets
 
 ## Examples:
 
 ### Greater Heal
 ```
-/run SmartCast("Greater Heal",5)
+/run SmartCast("Greater Heal",1)
 ```
 -   Ignores targets with reaction less than 5 (friendly)
 
 ### Heal (included downrank)
 ```
-/run SmartCast("Heal(Rank 2)",5)
+/run SmartCast("Heal(Rank 2)",1)
 ```
 
 ### Flash Heal (with Alt modifier for downrank)
@@ -79,6 +68,6 @@ possible to keep that fast.
 
 ### Resurrection (say name of unit casted on if actually dead)
 ```
-/run local t=SmartCast("Resurrection",5)if(UnitIsDead(t))then SendChatMessage("Resurrection on "..UnitName(t),"SAY")end
+/run local t=SmartCast("Resurrection",1)if(UnitIsDead(t))then SendChatMessage("Resurrection on "..UnitName(t),"SAY")end
 ```
 
