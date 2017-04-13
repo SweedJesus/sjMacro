@@ -24,7 +24,7 @@ possible to keep that fast.
     -   0 = don't care
     -   1 = friend only
     -   2 = enemy only
--   Healing spells can generally only be cast on units of reaction 5 or higher
+-   Healing spells can only be cast on neutral or friendly units/players
 -   Returns the [unitID](http://wowprogramming.com/docs/api_types#unitID) of
     the target the spell was casted on (unfortunately regardless of whether the
     spell actually cast; can't think of a way to address this)
@@ -44,7 +44,7 @@ possible to keep that fast.
 ```
 /run SmartCast("Greater Heal",1)
 ```
--   Ignores targets with reaction less than 5 (friendly)
+-   Ignores hostile targets
 
 ### Heal (included downrank)
 ```
