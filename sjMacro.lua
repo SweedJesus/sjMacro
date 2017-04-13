@@ -84,6 +84,10 @@ local RN = "Renew"
 -- Shadow Protection
 local SP = "Shadow Protection"
 
+-- Warlock
+-- Demonology
+local UB = "Unending Breath"
+
 -- ----------------------------------------------------------------------------
 -- Functions
 -- ----------------------------------------------------------------------------
@@ -102,7 +106,7 @@ end
 
 function sjMacro_OnPlayerEnteringWorld()
     local _, class = UnitClass("player")
-    if not (class == "DRUID" or class == "MAGE" or class == "PRIEST" or class == "PALADIN") then
+    if not (class == "DRUID" or class == "MAGE" or class == "PRIEST" or class == "PALADIN" or class == "WARLOCK") then
         return
     end
 
@@ -137,6 +141,10 @@ function sjMacro_OnPlayerEnteringWorld()
             [PWS] = {  6, 12, 18, 24, 30, 36, 42, 48, 54, 60 },
             [RN]  = {  1, 14, 20, 26, 32, 38, 44, 50, 56 },
             [SP]  = { 30, 42, 56 }
+        }
+    elseif class == "WARLOCK" then
+        sjMacro.spellLevelLearend = {
+            [UB] = { 16 }
         }
     end
 
