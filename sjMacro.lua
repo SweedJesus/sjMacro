@@ -2,16 +2,18 @@
 -- the rank of the buff was learned at minus 10 and only seems to apply to
 -- spells which are instant cast (most buffs).
 -- e.g. target is level 13; can cast Power Word: Shield (Rank 3) because it was
--- learned at level 18 (13 is less than 18 minus 10 or 8) but cannot cast Power
+-- learned at level 18 (13 is less than 18 minus 10) but cannot cast Power
 -- Word: Fortitude (Rank 3) because it was learned at level 24 (13 is not less
--- than 24 minus 10 or 14)
+-- than 24 minus 10)
 
 -- ----------------------------------------------------------------------------
 -- Target Priority:
 --
 -- Edit this table to change the order of target priority for smart targeting
--- (To put spell on cursor when no valid mouseover or target are present
--- remove the "player" entry)
+-- (To put spell "on cursor" when no valid mouseover or target are present
+-- remove the "player" entry. And if you play WoW you understand what I mean
+-- by "on cursor", you know like when you click a spell straight out of the
+-- spell book and the cursor turns into a magical finger).
 --
 -- Valid UnitID's:
 -- player, pet, target, mouseover, party1-4, partypet1-4, raid1-40, raidpet1-40
