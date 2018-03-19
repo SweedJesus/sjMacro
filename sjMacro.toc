@@ -1,7 +1,6 @@
 ## Interface: 11200
-## Title: |cffffff00s|r|cff007fffj|rMacro |cff7fff7f-Ace2-|r |cffff00001.12|r
+## Title: sjMacro
 ## Author: SweedJesus (Miraculin @ Nostalrius)
 ## X-Website: https://nilsso.github.io/pages/vidya/wow/#addons
 ## DefaultState: Enabled
-
 sjMacro.xml
