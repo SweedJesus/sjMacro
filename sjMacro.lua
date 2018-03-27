@@ -207,7 +207,7 @@ function sjMacro_SmartTarget(assist)
         if unit == "mouseover" then
             unit = GetMouseFocus().unit or unit
         end
-        isValidAssist = UnitIsValidAssist(unit)
+        local isValidAssist = UnitIsValidAssist(unit)
         if (isValidAssist ~= nil) and
             ((assist == 1 and isValidAssist) or
             (assist == 2 and not isValidAssist)) then
