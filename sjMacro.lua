@@ -204,6 +204,17 @@ function sjMacro_OnPlayerEnteringWorld()
     sjMacro:RegisterEvent("LEARNED_SPELL_IN_TAB")
 end
 
+-- Stance checking shortcut
+function Form()
+	for i=1, GetNumShapeshiftForms()+1 do
+		local _, _, active = GetShapeshiftFormInfo(i)
+		if active then
+			return i
+		end
+	end
+	return nil
+end
+
 -- Update list of best buff ranks
 function sjMacro_UpdateBestBuffRanks()
     local i, spell, rank = 1, GetSpellName(1, "spell")
@@ -312,4 +323,4 @@ end
 -- Global function aliases
 SmartBuff = sjMacro_SmartBuff
 SmartCast = sjMacro_SmartCast
-
+Cast = CastSpellByName
